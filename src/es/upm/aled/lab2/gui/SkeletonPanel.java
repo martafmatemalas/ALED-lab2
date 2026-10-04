@@ -57,13 +57,13 @@ public class SkeletonPanel extends JPanel {
 
 	private void drawSkeleton(Graphics g, double parentX, double parentY, Node node) {
 		// TODO: Ponga comentarios en este método
-		g.fillOval((int) node.getX() - 4, (int) node.getY() - 4, 8, 8);
-		g.drawLine((int) parentX, (int) parentY, (int) node.getX(), (int) node.getY());
+		g.fillOval((int) node.getX() - 4, (int) node.getY() - 4, 8, 8);//paso base
+		g.drawLine((int) parentX, (int) parentY, (int) node.getX(), (int) node.getY());//paso base
 		if (node.getChildren().size() == 0) {
 			return;
 		}
 		for (Node child : node.getChildren()) {
-			drawSkeleton(g, node.getX(), node.getY(), child);
-		}
+			drawSkeleton(g, node.getX(), node.getY(), child); //se llama a sí mismo, al propio método
+		} //paso recursivo
 	}
 }
