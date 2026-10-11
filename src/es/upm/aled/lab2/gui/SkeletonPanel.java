@@ -14,7 +14,7 @@ import es.upm.aled.lab2.kinematics.*;
 public class SkeletonPanel extends JPanel {
 
 	private static final long serialVersionUID = 8724301078499171545L;
-	private Segment root;
+	private Segment root;//como atributo presenta un segmento raiz
 
 	/**
 	 * Shows a window containing a 2D representation of an exoskeleton. Each joint
@@ -31,7 +31,7 @@ public class SkeletonPanel extends JPanel {
 	 * @param sizeX The width of the window.
 	 * @param sizeX The height of the window.
 	 */
-	public SkeletonPanel(Segment root, int sizeX, int sizeY) {
+	public SkeletonPanel(Segment root, int sizeX, int sizeY) { //constructor
 		this.root = root;
 		// Setup Swing window
 		JFrame frame = new JFrame("Recursive Skeleton - Forward Kinematics");
@@ -45,25 +45,68 @@ public class SkeletonPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		// Draws the window
 		super.paintComponent(g);
-		float originX = getWidth() / 2;
-		float originY = getHeight() / 2;
+		float originX = getWidth() / 2;//el ancho de la ventana partido por dos
+		float originY = getHeight() / 2;//el largo de la ventana partido por dos
+		// esto permite que el nodo raiz se dibuje justo en el centro de la ventana
 
 		// Computes the full tree of positions
 		Node nodeRoot = ForwardKinematics.computePositions(root, originX, originY);
+		//esto te genera cual es el nodo raiz
 
 		// Draw the tree of Nodes recursively
 		drawSkeleton(g, originX, originY, nodeRoot);
 	}
 
-	private void drawSkeleton(Graphics g, double parentX, double parentY, Node node) {
+	/**
+	 * Dibuja de forma recursiva el "esqueleto" de un árbol: un círculo en cada
+	 * nodo y una línea que lo une con su nodo padre.
+	 *
+	 * @param g       contexto gráfico sobre el que se dibuja
+	 * @param parentX coordenada X del nodo padre
+	 * @param parentY coordenada Y del nodo padre
+	 * @param node    nodo actual que se va a dibujar
+	 */
+	private void drawSkeleton(Graphics g, double parentX, double parentY, Node node) { 
+		//parentX y parentY al principio presentarán los valores de originX y originY, pero a medida que se vayan dibujando nodos hijos, se va a ir guardando los valores de su localidad.
 		// TODO: Ponga comentarios en este método
-		g.fillOval((int) node.getX() - 4, (int) node.getY() - 4, 8, 8);//paso base
-		g.drawLine((int) parentX, (int) parentY, (int) node.getX(), (int) node.getY());//paso base
+	
+		//código común, cualquier llamada al código, se va a realizar estas dos lineas
+		g.fillOval((int) node.getX() - 4, (int) node.getY() - 4, 8, 8);//pinta un circulo en la ventana(fillOval) en las coordenadas del nodo. Le das el incio dodne va a dibujar el circulo, y asignarle un ancho y un alto, consiguiendo que el dibujo del circulo sea de radio 4 y se centre en el punto del nodo.
+		g.drawLine((int) parentX, (int) parentY, (int) node.getX(), (int) node.getY());//pinta una linea desde el nodo anterior (direcciones parent) al actual (getters a las coordenadas del nodo actual)
+		//
+		
+		//caso base, caso en el que si se llega, se para la recursividad
 		if (node.getChildren().size() == 0) {
 			return;
-		}
+		}//si no tiene hijos, para
+		
+		//paso recursivo
 		for (Node child : node.getChildren()) {
 			drawSkeleton(g, node.getX(), node.getY(), child); //se llama a sí mismo, al propio método
-		} //paso recursivo
-	}
+		}
+	}//primero dibujará el nodo raiz
 }
+
+// ¿Qué tareas realiza el constructor?
+// Las tareas del constructor son: guardar el atributo segmento raiz, configura la ventana donde se va a dibujar, le fijamos el tamaño 600,600, y ademas llama a un metodo que cierra la ventana
+//
+//¿Qué hace el método paintComponent()?
+// Se encarga de pintar el exoesqueleto. Crea el origen de coordenadas donde se va a empezar a pinter cuando se invoque a este método, que será el centro de la ventana creada. Para pintarlo, va a llamar al metodo drawskeleton pasandole el nodo raiz, ademas de las coordenadas de origenes que hemos dicho y el grafico donde pintarlo (g)
+//
+//¿A qué dos métodos, que representan cada uno un algoritmo recursivo distinto, llama el método paintComponent()?¿Cuál de ellos ya está implementado?
+//Llama al método computerPositions de la clase ForwardKinematics, que no esta programado todavía, y llama a drawSkeleton que sí está programao y es recursivo.
+//
+//¿Algún método se llama a sí mismo?
+//Sí, drawSkeleton
+
+
+
+
+
+
+
+
+
+
+
+
